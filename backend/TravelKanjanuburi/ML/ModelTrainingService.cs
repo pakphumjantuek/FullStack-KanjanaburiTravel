@@ -1,7 +1,4 @@
-﻿
-using TravelKanjanuburi.ML;
-
-public interface IModelTrainingService
+﻿public interface IModelTrainingService
 {
     Task<(bool ok, int rows, string? message)> RetrainNowAsync(int days, int minRows, CancellationToken ct);
 }

@@ -293,7 +293,7 @@ const LocalDishDetailPage = () => {
                 <div className="mt-8">
                   <h3 className="text-slate-900 font-bold text-lg mb-3 flex items-center gap-2">
                     <MapPin size={18} className="text-orange-500" />
-                    ร้านที่มีเมนูนี้
+                    ร้านอาหารที่มีเมนูนี้
                   </h3>
 
                   {placesLoading ? (

@@ -33,7 +33,6 @@ import PlaceOpeningPage from "./features/placeOpening/Pages/PlaceOpeningPage";
 import LocalDishList from "./features/localDish/page/LocalDishList";
 import LocalDishFormPage from "./features/localDish/page/LocalDishForm";
 import LocalDishUserListPage from "./features/localDish/page/LocalDishUserList";
-import LocalDishDetailPage from "./features/localDish/page/LocalDishUserDetaill";
 import LocalDishUserDetaill from "./features/localDish/page/LocalDishUserDetaill";
 import PlaceMenuManagePage from "./features/places/Pages/PlaceMenuManagePage";
 

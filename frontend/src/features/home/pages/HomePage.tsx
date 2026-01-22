@@ -2,72 +2,222 @@ import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetHomeQuery } from "../homeApi";
 
-import heroBridge from "../../../assets/hero-bridge.jpg"; // หรือ .jpg
+import heroBridge from "../../../assets/hero-bridge.jpg";
 
 import {
-  ArrowDown,
   Search,
-  MapPinned,
   Trees,
   Landmark,
   Mountain,
   Hotel,
   UtensilsCrossed,
-  MapPin,
   Star,
+  MapPin,
+  ArrowRight,
+  Sparkles,
+  TrendingUp,
 } from "lucide-react";
 
-type BtnProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "outline" | "ghost";
-  size?: "md" | "lg";
+type Category = {
+  key: string;
+  label: string;
+  icon: React.ElementType;
+  to: string;
 };
 
-function Button({
-  className = "",
-  variant = "primary",
-  size = "md",
-  ...props
-}: BtnProps) {
-  const base =
-    "inline-flex items-center justify-center font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed";
-  const sizes =
-    size === "lg"
-      ? "px-7 py-3.5 text-base rounded-2xl"
-      : "px-5 py-2.5 text-sm rounded-xl";
+function SectionHeader({
+  title,
+  icon: Icon,
+  to,
+}: {
+  title: string;
+  icon?: React.ElementType;
+  to: string;
+}) {
+  return (
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-3">
+        {Icon && (
+          <div className="p-2 rounded-xl bg-emerald-100/50 text-emerald-600">
+            <Icon className="w-6 h-6" />
+          </div>
+        )}
+        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+          {title}
+        </h2>
+      </div>
+      <Link
+        to={to}
+        className="group inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-emerald-600 transition-colors"
+        onClick={() => window.scrollTo(0, 0)}
+      >
+        ดูทั้งหมด
+        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+      </Link>
+    </div>
+  );
+}
 
-  const variants =
-    variant === "primary"
-      ? "bg-green-600 hover:bg-green-700 text-white"
-      : variant === "outline"
-        ? "border border-white/35 bg-white/10 hover:bg-white/15 text-white"
-        : "bg-transparent hover:bg-white/10 text-white";
+function PlaceCard({
+  place,
+  onClick,
+  variant = "portrait",
+}: {
+  place: any;
+  onClick: () => void;
+  variant?: "portrait" | "landscape";
+}) {
+  const imageUrl = place.coverImageUrl
+    ? `${import.meta.env.VITE_API_BASE_URLS ?? ""}${place.coverImageUrl}`
+    : "";
 
+  const rating = typeof place.rating === "number" ? place.rating : undefined; 
+  const displayRating = rating ?? (place.popularityScore > 0 ? (place.popularityScore % 5) : 4.5);
+  
+  const location = place.locationName ?? place.district ?? "กาญจนบุรี";
+
+  if (variant === "landscape") {
+    return (
+      <button
+        onClick={onClick}
+        className="group relative flex w-full h-[280px] rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300"
+      >
+        <div className="w-2/5 md:w-1/2 relative overflow-hidden">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={place.name}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full bg-slate-200 grid place-items-center text-slate-400">
+              <Sparkles className="w-8 h-8 opacity-20" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-transparent to-transparent" />
+        </div>
+        
+        <div className="flex-1 p-6 md:p-8 flex flex-col justify-center text-left bg-gradient-to-br from-white to-slate-50/50">
+          <div className="flex items-center gap-2 mb-3">
+            {place.categoryName && (
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 tracking-wide uppercase">
+                {place.categoryName}
+              </span>
+            )}
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-100">
+                <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <span className="text-xs font-bold text-amber-700">{typeof displayRating === 'number' ? displayRating.toFixed(1) : '4.5'}</span>
+            </div>
+          </div>
+
+          <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors line-clamp-2">
+            {place.name}
+          </h3>
+
+          <div className="flex items-center gap-2 text-slate-500 mb-4">
+            <MapPin className="w-4 h-4 shrink-0 text-emerald-500" />
+            <span className="text-sm line-clamp-1">{location}</span>
+          </div>
+
+          {place.description && (
+             <p className="text-slate-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                {place.description}
+             </p>
+          )}
+
+          <div className="mt-auto">
+            <span className="inline-flex items-center text-sm font-bold text-emerald-600 border-b-2 border-emerald-100 group-hover:border-emerald-500 transition-colors pb-0.5">
+               อ่านรีวิวเต็ม
+               <ArrowRight className="w-4 h-4 ml-1" />
+            </span>
+          </div>
+        </div>
+      </button>
+    );
+  }
+
+  // Portrait (Standard)
   return (
     <button
-      className={`${base} ${sizes} ${variants} ${className}`}
-      {...props}
-    />
+      onClick={onClick}
+      className="group relative flex flex-col w-full bg-white rounded-2xl overflow-hidden border border-slate-100 hover:border-emerald-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={place.name}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full grid place-items-center text-slate-300">
+            <Sparkles className="w-10 h-10 opacity-20" />
+          </div>
+        )}
+
+        <div className="absolute top-3 left-3">
+          {place.categoryName && (
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-white/95 text-slate-700 backdrop-blur shadow-sm">
+              {place.categoryName}
+            </span>
+          )}
+        </div>
+        
+        <div className="absolute top-3 right-3">
+             <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/95 backdrop-blur shadow-sm">
+                <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <span className="text-xs font-bold text-slate-800">
+                    {typeof displayRating === 'number' ? displayRating.toFixed(1) : '4.5'}
+                </span>
+            </div>
+        </div>
+      </div>
+
+      <div className="p-4 flex-1 flex flex-col text-left">
+        <h3 className="font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1 mb-1">
+          {place.name}
+        </h3>
+        <div className="flex items-center gap-1.5 text-slate-500 mb-2">
+          <MapPin className="w-3.5 h-3.5 shrink-0 text-emerald-500" />
+          <span className="text-xs line-clamp-1">{location}</span>
+        </div>
+        {place.description && (
+            <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+            {place.description}
+            </p>
+        )}
+      </div>
+    </button>
   );
 }
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { data, isLoading } = useGetHomeQuery({ topN: 10 });
+  // Fetch slightly more items to fill layouts
+  const { data, isLoading } = useGetHomeQuery({ topN: 12 });
+
   const [query, setQuery] = useState("");
 
-  const sections = data?.sections ?? [];
-
-  const categories = useMemo(
+  const categories: Category[] = useMemo(
     () => [
-      { key: "recommended", label: "ท่องเที่ยว", Icon: MapPinned },
-      { key: "nature", label: "ธรรมชาติ", Icon: Trees },
-      { key: "history", label: "ประวัติศาสตร์", Icon: Landmark },
-      { key: "activity", label: "กิจกรรม", Icon: Mountain },
-      { key: "stay", label: "ที่พัก", Icon: Hotel },
-      { key: "food", label: "ร้านอาหาร", Icon: UtensilsCrossed },
+      { key: "top", label: "ยอดนิยม", icon: Star, to: "/places?sort=top" },
+      { key: "nature", label: "ธรรมชาติ", icon: Trees, to: "/places?category=Nature" },
+      { key: "history", label: "ประวัติศาสตร์", icon: Landmark, to: "/places?category=History" },
+      { key: "activity", label: "กิจกรรม", icon: Mountain, to: "/places?category=Activity" },
+      { key: "stay", label: "ที่พัก", icon: Hotel, to: "/places?category=Accommodation" },
+      { key: "food", label: "ร้านอาหาร", icon: UtensilsCrossed, to: "/places?category=Restaurant" },
     ],
-    [],
+    []
   );
+
+  const sections = data?.sections ?? [];
+  
+  // Assuming specific logic: First section is recommended, Second is trending
+  const recommendedSection = sections.length > 0 ? sections[0] : null;
+  const popularSection = sections.length > 1 ? sections[1] : null;
+  const otherSections = sections.length > 2 ? sections.slice(2) : [];
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,279 +227,196 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] grid place-items-center text-gray-600">
-        Loading...
+      <div className="min-h-screen grid place-items-center bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="text-slate-400 text-sm font-medium animate-pulse">กำลังโหลดข้อมูล...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white">
-      {/* ================= HERO ================= */}
-      <section className="relative min-h-[94vh] flex items-center justify-center overflow-hidden">
-        {/* Background */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroBridge})` }}
-        >
-          <div className="absolute inset-0 bg-linear-to-b from-black/20 via-black/35 to-black/70" />
+    <div className="min-h-screen bg-white">
+      {/* HERO SECTION */}
+      <section className="relative h-[550px] md:h-[600px] overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={heroBridge}
+            alt="Kanchanaburi"
+            className="w-full h-full object-cover scale-105 animate-[zoom-slow_20s_infinite_alternate]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-white" />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 text-center">
-          <p
-            className="text-white/90 font-medium text-lg mb-4 animate-[fadeIn_.6s_ease_forwards] opacity-0"
-            style={{ animationDelay: "0.15s" }}
-          >
-            ยินดีต้อนรับสู่
-          </p>
-
-          <h1
-            className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white tracking-tight mb-6
-                       animate-[fadeUp_.7s_ease_forwards] opacity-0"
-            style={{ animationDelay: "0.3s" }}
-          >
-            กาญจนบุรี
-          </h1>
-
-          <p
-            className="text-white/90 text-xl md:text-2xl mb-3 animate-[fadeUp_.7s_ease_forwards] opacity-0"
-            style={{ animationDelay: "0.45s" }}
-          >
-            ดินแดนแห่งวัฒนธรรมและธรรมชาติอันงดงาม
-          </p>
-
-          <p
-            className="text-white/75 text-base md:text-lg max-w-2xl mx-auto mb-8
-                       animate-[fadeUp_.7s_ease_forwards] opacity-0"
-            style={{ animationDelay: "0.6s" }}
-          >
-            ค้นหาเส้นทาง เที่ยว กิน พัก และกิจกรรมที่ใช่สำหรับคุณในกาญจนบุรี
-          </p>
-
-          {/* Search Bar */}
-          <form
-            onSubmit={onSearch}
-            className="max-w-3xl mx-auto mb-8 animate-[fadeUp_.7s_ease_forwards] opacity-0"
-            style={{ animationDelay: "0.75s" }}
-          >
-            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-white/40 px-4 py-3 flex items-center gap-3">
-              <Search className="text-gray-500" size={18} />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="ค้นหาสถานที่ท่องเที่ยว..."
-                className="flex-1 bg-transparent outline-none text-sm md:text-base text-gray-900 placeholder:text-gray-500"
-              />
-              <Button type="submit" className="rounded-xl">
-                ค้นหา
-              </Button>
+        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center pb-10">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white border border-white/20 backdrop-blur-md mb-6 shadow-lg">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-sm font-semibold tracking-wide">เที่ยวกาญจนบุรี The Best of Kanchanaburi</span>
             </div>
-          </form>
 
-          {/* CTA */}
-          <div
-            className="flex flex-col sm:flex-row gap-3 justify-center
-                       animate-[fadeUp_.7s_ease_forwards] opacity-0"
-            style={{ animationDelay: "0.9s" }}
-          >
-            <Button size="lg" onClick={() => navigate("/places")}>
-              เริ่มการเดินทาง
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate("/places")}
-            >
-              ชมสถานที่ท่องเที่ยว
-            </Button>
-          </div>
+            <h1 className="text-5xl md:text-7xl font-black text-white drop-shadow-sm mb-6 leading-tight">
+              ค้นหาความทรงจำ<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-emerald-400">
+                 ในแบบของคุณ
+              </span>
+            </h1>
 
-          {/* Category pills */}
-          <div
-            className="mt-10 max-w-5xl mx-auto
-                       animate-[fadeIn_.7s_ease_forwards] opacity-0"
-            style={{ animationDelay: "1.05s" }}
-          >
-            <div className="flex items-center gap-2 overflow-x-auto justify-center py-2">
-              {categories.map(({ key, label, Icon }) => (
+            <p className="text-white/90 text-lg md:text-xl font-medium max-w-xl mb-10 leading-relaxed drop-shadow-sm">
+              รวมทุกแลนด์มาร์คสำคัญ ที่พักสุดชิล และร้านเด็ดห้ามพลาด 
+              ให้ทริปกาญจนบุรีของคุณพิเศษกว่าที่เคย
+            </p>
+
+            {/* Main Search Bar */}
+            <form onSubmit={onSearch} className="group relative max-w-xl">
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+              <div className="relative flex items-center gap-3 p-2 bg-white rounded-2xl shadow-2xl">
+                <div className="pl-4 text-emerald-500">
+                  <Search className="w-6 h-6" />
+                </div>
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="ค้นหาสถานที่, ที่พัก, ร้านอาหาร..."
+                  className="flex-1 bg-transparent py-3 text-lg text-slate-800 placeholder:text-slate-400 font-medium outline-none"
+                />
                 <button
-                  key={key}
-                  type="button"
-                  onClick={() => navigate("/places")}
-                  className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full
-                             bg-white/10 hover:bg-white/15 text-white border border-white/20
-                             transition-colors"
+                  type="submit"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6 py-3 font-bold shadow-md transition-all active:scale-95"
                 >
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/15">
-                    <Icon size={16} />
-                  </span>
-                  <span className="text-sm font-medium">{label}</span>
+                  ค้นหา
                 </button>
-              ))}
-            </div>
+              </div>
+            </form>
           </div>
-        </div>
-
-        {/* Scroll */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
-          <a
-            href="#sections"
-            className="flex flex-col items-center text-white/70 hover:text-white transition-colors
-                       animate-[floatY_2.2s_ease-in-out_infinite]"
-          >
-            <span className="text-sm mb-2">เลื่อนเพื่อสำรวจ</span>
-            <ArrowDown className="w-5 h-5" />
-          </a>
         </div>
       </section>
 
-      {/* ================= SECTIONS ================= */}
-      <div
-        id="sections"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-16"
-      >
-        {sections.map((sec) => (
-          <section key={sec.key} className="space-y-6">
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {sec.title}
-                </h2>
-                <p className="text-gray-500 text-sm mt-1">แนะนำจากระบบ</p>
-              </div>
-
-              <Link
-                to="/places"
-                className="text-sm font-medium text-green-700 hover:text-green-800"
-              >
-                ดูเพิ่มเติม →
-              </Link>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-7">
-              {sec.items.map((p, index) => {
-                const imageUrl = p.coverImageUrl
-                  ? `${import.meta.env.VITE_API_BASE_URLS ?? ""}${p.coverImageUrl}`
-                  : "https://via.placeholder.com/400x300?text=No+Image";
-
-                const rating =
-                  typeof (p as any).rating === "number"
-                    ? (p as any).rating
-                    : undefined;
-                const location =
-                  (p as any).locationName ?? (p as any).district ?? undefined;
-
+      {/* CATEGORIES STRIP */}
+      <section className="relative -mt-10 mb-16 z-10 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 p-3 rounded-2xl shadow-xl shadow-slate-200/50 flex flex-wrap justify-center md:justify-between gap-2 md:gap-4 overflow-x-auto">
+             {categories.map((c) => {
+                const Icon = c.icon;
                 return (
-                  <div
-                    key={p.placeId}
-                    onClick={() => navigate(`/placeDetails/${p.placeId}`)}
-                    className="group cursor-pointer rounded-2xl overflow-hidden bg-white border border-gray-200
-                               shadow-sm hover:shadow-lg transition-all duration-300
-                               animate-[fadeUp_.6s_ease_forwards] opacity-0"
-                    style={{ animationDelay: `${0.05 + index * 0.06}s` }}
+                  <button
+                    key={c.key}
+                    onClick={() => navigate(c.to)}
+                    className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition-all group"
                   >
-                    <div className="relative h-56 overflow-hidden bg-gray-100">
-                      <img
-                        src={imageUrl}
-                        alt={p.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-linear-to-t from-black/45 via-black/0 to-black/0" />
-
-                      {p.categoryName && (
-                        <div className="absolute top-4 left-4">
-                          <span className="px-3 py-1 bg-white/90 text-gray-900 text-xs font-semibold rounded-full border border-white/40">
-                            {p.categoryName}
-                          </span>
-                        </div>
-                      )}
-
-                      {rating != null && (
-                        <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-black/60 backdrop-blur rounded-full">
-                          <Star className="w-4 h-4 text-yellow-300 fill-yellow-300" />
-                          <span className="text-white text-xs font-semibold">
-                            {rating.toFixed(1)}
-                          </span>
-                        </div>
-                      )}
+                    <div className="p-2 rounded-lg bg-slate-100 text-slate-500 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+                        <Icon className="w-5 h-5" />
                     </div>
-
-                    <div className="p-5">
-                      <h3 className="font-semibold text-gray-900 text-base line-clamp-2 group-hover:text-green-700 transition-colors">
-                        {p.name}
-                      </h3>
-
-                      <p className="text-sm text-gray-600 line-clamp-2 mt-2 min-h-10">
-                        {p.description}
-                      </p>
-
-                      <div className="flex items-center gap-3 mt-4 text-xs text-gray-500">
-                        {location && (
-                          <div className="inline-flex items-center gap-1">
-                            <MapPin className="w-4 h-4 text-green-600" />
-                            <span className="line-clamp-1">{location}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {p.tags?.length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-1.5">
-                          {p.tags
-                            .slice(0, 3)
-                            .map((tag: string, idx: number) => (
-                              <span
-                                key={idx}
-                                className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"
-                              >
-                                #{tag}
-                              </span>
-                            ))}
-                        </div>
-                      )}
-
-                      <div className="mt-5">
-                        <button
-                          className="w-full rounded-xl border border-gray-200 bg-white hover:bg-gray-50
-                                     py-2.5 text-sm font-semibold text-gray-800 transition-colors"
-                        >
-                          ดูรายละเอียด
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                    <span className="font-bold text-sm">{c.label}</span>
+                  </button>
                 );
-              })}
-            </div>
-          </section>
+             })}
+          </div>
+        </div>
+      </section>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32 space-y-20">
+        
+        {/* RECOMMENDED SECTION (Landscape / Highlight) */}
+        {recommendedSection && (
+            <section>
+                <SectionHeader 
+                    title="ยอดนิยมสำหรับคุณ" 
+                    icon={Sparkles} 
+                    to="/places?sort=recommended" 
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Big Highlight */}
+                    {recommendedSection.items?.slice(0, 4).map((item) => (
+                        <PlaceCard 
+                            key={item.placeId} 
+                            place={item} 
+                            variant="landscape"
+                            onClick={() => navigate(`/placeDetails/${item.placeId}`)} 
+                        />
+                    ))}
+                </div>
+            </section>
+        )}
+
+        {/* POPULAR NOW SECTION (Grid) */}
+        {popularSection && (
+             <section>
+                <SectionHeader 
+                    title={popularSection.title || "ยอดนิยมตอนนี้"} // Fallback or use API title
+                    icon={TrendingUp}
+                    to="/places?sort=popular"
+                />
+                
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10">
+                    {popularSection.items?.slice(0, 8).map((item) => (
+                         <PlaceCard 
+                            key={item.placeId} 
+                            place={item} 
+                            variant="portrait"
+                            onClick={() => navigate(`/placeDetails/${item.placeId}`)} 
+                        />
+                    ))}
+                </div>
+            </section>
+        )}
+        
+        {/* OTHER SECTIONS */}
+        {otherSections.map((sec) => (
+            <section key={sec.key}>
+                <SectionHeader 
+                    title={sec.title} 
+                    to="/places" 
+                />
+                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    {sec.items?.slice(0, 4).map((item) => (
+                         <PlaceCard 
+                            key={item.placeId} 
+                            place={item} 
+                            onClick={() => navigate(`/placeDetails/${item.placeId}`)} 
+                        />
+                    ))}
+                </div>
+            </section>
         ))}
 
-        {/* Bottom CTA */}
-        <div className="rounded-3xl border border-gray-200 bg-linear-to-r from-green-50 via-green-50/60 to-white p-8 md:p-10 text-center">
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-            พร้อมออกเดินทางหรือยัง?
-          </h3>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            วางแผนทริปและรับคำแนะนำสถานที่ที่เหมาะกับคุณในกาญจนบุรี
-          </p>
-          <Button size="lg" onClick={() => navigate("/trip")}>
-            วางแผนเที่ยวเลย
-          </Button>
-        </div>
-      </div>
+        {/* CTA Banner */}
+        <section className="relative overflow-hidden rounded-[2.5rem] bg-slate-900 px-6 py-12 md:px-16 md:py-20 text-center md:text-left">
+           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[400px] h-[400px] bg-emerald-500 rounded-full blur-[100px] opacity-20" />
+           <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[300px] h-[300px] bg-blue-500 rounded-full blur-[80px] opacity-20" />
+           
+           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+              <div className="max-w-2xl">
+                 <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
+                    ยังตัดสินใจไม่ได้? <br/>
+                    <span className="text-emerald-400">ให้เราช่วยวางแผนทริป</span>
+                 </h2>
+                 <p className="text-slate-300 text-lg mb-0 leading-relaxed">
+                    ตอบคำถามสั้นๆ ไม่กี่ข้อ ระบบจะช่วยจัดทริปที่
+                    เหมาะกับสไตล์ของคุณที่สุด ฟรี!
+                 </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 shrink-0">
+                 <button
+                   onClick={() => navigate("/trip")}
+                   className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-2xl shadow-lg shadow-emerald-900/20 transition-all hover:-translate-y-1"
+                 >
+                    เริ่มวางแผนทริป
+                 </button>
+                 <button 
+                    onClick={() => navigate("/places")}
+                    className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl backdrop-blur border border-white/10 transition-all hover:-translate-y-1"
+                 >
+                    ดูสถานที่ทั้งหมด
+                 </button>
+              </div>
+           </div>
+        </section>
 
-      {/* Keyframes (ย้ายไป global css ได้) */}
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(10px) }
-          to { opacity: 1; transform: translateY(0) }
-        }
-        @keyframes floatY {
-          0%, 100% { transform: translate(-50%, 0) }
-          50% { transform: translate(-50%, -8px) }
-        }
-      `}</style>
+      </main>
     </div>
   );
 }

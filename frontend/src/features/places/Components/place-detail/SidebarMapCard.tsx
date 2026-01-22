@@ -41,13 +41,13 @@ export function SidebarMapCard({
         <img
           src={
             staticMap ??
-            "https://via.placeholder.com/400x300/e2e8f0/64748b?text=No+Map"
+            " https://placehold.co/400x300/eee/aaa?text=No+Map"
           }
           alt="Map"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           onError={(e) => {
             e.currentTarget.src =
-              "https://via.placeholder.com/400x300/e2e8f0/64748b?text=No+Map";
+              "https://placehold.co/400x300/eee/aaa?text=No+Map";
           }}
         />
         <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-slate-900/20 transition-colors flex items-center justify-center">

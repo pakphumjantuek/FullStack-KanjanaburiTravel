@@ -14,7 +14,6 @@ export function PlaceGallery({
   placeName,
   images,
   selectedImageIndex,
-  onSelect,
 }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -49,7 +48,6 @@ export function PlaceGallery({
     setCurrentIndex((i) => (i === images.length - 1 ? 0 : i + 1));
   };
 
-  const goToSlide = (slideIndex: number) => setCurrentIndex(slideIndex);
 
   if (!images || images.length === 0) {
     return (

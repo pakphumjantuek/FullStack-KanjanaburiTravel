@@ -39,6 +39,20 @@ export const formatThaiDateTime = (dateString: string): string => {
   }
 };
 
+export const formatThaiTime = (value: string | Date) => {
+  const d = value instanceof Date ? value : new Date(value);
+
+  return d.toLocaleTimeString("th-TH", {
+    timeZone: "Asia/Bangkok",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+};
+
+
+
+
 export const toBangkokDate = (date: Date) =>
   date.toLocaleDateString("sv-SE", { timeZone: "Asia/Bangkok" });
 

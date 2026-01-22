@@ -28,7 +28,6 @@ import { PlaceGallery } from "../Components/place-detail/PlaceGallery";
 import { PlaceDescription } from "../Components/place-detail/PlaceDescription";
 import { PlaceHistoryCard } from "../Components/place-detail/PlaceHistoryCard";
 import { SidebarMapCard } from "../Components/place-detail/SidebarMapCard";
-import { WeatherWidget } from "../Components/place-detail/WeatherWidget";
 import { useLazyGetPlaceOpeningQuery } from "../../placeOpening/placeOpenApi";
 import { PlaceReviews } from "../../placeReview/page/PlaceReviews";
 

@@ -5,7 +5,6 @@ import { Loading } from "../../../components/Loading";
 import { useBehaviorLogger } from "../../behavior/useBehaviorLogger";
 
 import { PlaceListHeader } from "../Components/place-list/PlaceListHeader";
-import { PlaceSearchBar } from "../Components/place-list/PlaceSearchBar";
 import { FilterChips } from "../Components/place-list/FilterChips";
 import { TagChips } from "../Components/place-list/TagChips";
 import { ResultsBar } from "../Components/place-list/ResultsBar";
@@ -18,6 +17,7 @@ import {
   buildUniqueTags,
   filterPlaces,
 } from "../Components/place-list/placeListUtils";
+import { Footer } from "../../../components/Layout/Footer";
 
 const PlaceUserList = () => {
   const [page, setPage] = useState(1);
@@ -118,7 +118,11 @@ const PlaceUserList = () => {
           onPageChange={setPage}
         />
       </div>
+      <div className="mt-10">
+        <Footer  />
+      </div>
     </div>
+  
   );
 };
 

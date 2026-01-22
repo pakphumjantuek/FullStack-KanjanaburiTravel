@@ -1,4 +1,4 @@
-import { Star, MapPin, Share2, Bookmark } from "lucide-react";
+import { Star, Share2, Bookmark } from "lucide-react";
 
 type Props = {
   name: string;

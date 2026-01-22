@@ -1,6 +1,4 @@
 ﻿using Microsoft.ML;
-using System.Threading;
-using TravelKanjanuburi.ML;
 
 public interface IModelStore
 {

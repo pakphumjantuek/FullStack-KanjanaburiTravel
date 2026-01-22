@@ -1,5 +1,4 @@
-﻿using TravelKanjanuburi.ML;
-using TravelKanjanuburi.Model.Log;
+﻿using TravelKanjanuburi.Model.Log;
 
 public static class InteractionBuilder
 {

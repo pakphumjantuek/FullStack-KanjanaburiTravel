@@ -65,7 +65,7 @@ export const tripApi = createApi({
       transformResponse: (response: ApiResponse<TripDetailDto>) => {
         if (!response.isSuccess || !response.result) {
           throw new Error(
-            response.errorMessages?.[0] ?? "โหลดรายละเอียดทริปไม่สำเร็จ"
+            response.errorMessages?.[0] ?? "โหลดรายละเอียดทริปไม่สำเร็จ",
           );
         }
         return response.result;
@@ -127,7 +127,7 @@ export const tripApi = createApi({
       transformResponse: (response: ApiResponse<TripItemDto>) => {
         if (!response.isSuccess || !response.result) {
           throw new Error(
-            response.errorMessages?.[0] ?? "เพิ่มสถานที่ลงทริปไม่สำเร็จ"
+            response.errorMessages?.[0] ?? "เพิ่มสถานที่ลงทริปไม่สำเร็จ",
           );
         }
         return response.result;
@@ -147,7 +147,7 @@ export const tripApi = createApi({
       transformResponse: (response: ApiResponse<TripItemDto>) => {
         if (!response.isSuccess || !response.result) {
           throw new Error(
-            response.errorMessages?.[0] ?? "แก้ไขรายการทริปไม่สำเร็จ"
+            response.errorMessages?.[0] ?? "แก้ไขรายการทริปไม่สำเร็จ",
           );
         }
         return response.result;
@@ -189,7 +189,7 @@ export const tripApi = createApi({
       transformResponse: (res: ApiResponse<TripSegmentDto[]>) => {
         if (!res.isSuccess || !res.result) {
           throw new Error(
-            res.errorMessages?.[0] ?? "โหลดเส้นทางของวันไม่สำเร็จ"
+            res.errorMessages?.[0] ?? "โหลดเส้นทางของวันไม่สำเร็จ",
           );
         }
         return res.result;
@@ -217,35 +217,35 @@ export const tripApi = createApi({
       }),
       invalidatesTags: ["trip"],
     }),
-   generateAutoTrip: builder.mutation<AutoTripResponse, AutoTripRequest>({
-  query: (body) => ({
-    url: "/trip/generate",
-    method: "POST",
-    body: {
-      startDateTime: body.startDateTime,
-      days: body.days ?? 1,
-      hoursPerDay: body.hoursPerDay ?? 8,
-      startLat: body.startLat ?? null,
-      startLng: body.startLng ?? null,
-      transportMode: body.transportMode ?? "driving",
+    generateAutoTrip: builder.mutation<AutoTripResponse, AutoTripRequest>({
+      query: (body) => ({
+        url: "/trip/generate",
+        method: "POST",
+        body: {
+          startDateTime: body.startDateTime,
+          days: body.days ?? 1,
+          hoursPerDay: body.hoursPerDay ?? 8,
+          startLat: body.startLat ?? null,
+          startLng: body.startLng ?? null,
+          transportMode: body.transportMode ?? "driving",
 
-      // ✅ เพิ่มใหม่
-      preferredTagNames: body.preferredTagNames ?? [],
-      relaxedPace: clamp01(body.relaxedPace ?? 0.5),
-      budgetLevel: clamp01(body.budgetLevel ?? 0.5),
-      withElderOrKids: body.withElderOrKids ?? false,
-    },
-  }),
-  transformResponse: (response: ApiResponse<AutoTripResponse>) => {
-    if (!response.isSuccess || !response.result) {
-      throw new Error(
-        response.errorMessages?.[0] ?? "สร้างทริปอัตโนมัติไม่สำเร็จ"
-      );
-    }
-    return response.result;
-  },
-  invalidatesTags: ["trip"],
-}),
+          // ✅ เพิ่มใหม่
+          preferredTagNames: body.preferredTagNames ?? [],
+          relaxedPace: clamp01(body.relaxedPace ?? 0.5),
+          budgetLevel: clamp01(body.budgetLevel ?? 0.5),
+          withElderOrKids: body.withElderOrKids ?? false,
+        },
+      }),
+      transformResponse: (response: ApiResponse<AutoTripResponse>) => {
+        if (!response.isSuccess || !response.result) {
+          throw new Error(
+            response.errorMessages?.[0] ?? "สร้างทริปอัตโนมัติไม่สำเร็จ",
+          );
+        }
+        return response.result;
+      },
+      invalidatesTags: ["trip"],
+    }),
 
     getTripMap: builder.query<
       TripMapViewDto,
@@ -258,7 +258,7 @@ export const tripApi = createApi({
       transformResponse: (response: any) => {
         if (!response?.isSuccess || !response?.result) {
           throw new Error(
-            response?.errorMessages?.[0] ?? "โหลดแผนที่ไม่สำเร็จ"
+            response?.errorMessages?.[0] ?? "โหลดแผนที่ไม่สำเร็จ",
           );
         }
         return response.result as TripMapViewDto;
@@ -285,5 +285,5 @@ export const {
   useSaveRouteMutation,
   useGenerateAutoTripMutation,
 
-  useGetTripMapQuery 
+  useGetTripMapQuery,
 } = tripApi;

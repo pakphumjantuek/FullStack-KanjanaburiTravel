@@ -39,15 +39,15 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        base.OnConfiguring(optionsBuilder);
-        optionsBuilder.UseSqlServer("Server=DESKTOP-FUBH5IH\\SQLEXPRESS;Database=Kanjanaburitravel;TrustServerCertificate=True;Trusted_Connection=True;");
+        //base.OnConfiguring(optionsBuilder);
+        //optionsBuilder.UseSqlServer("Server=DESKTOP-FUBH5IH\\SQLEXPRESS;Database=Kanjanaburitravel;TrustServerCertificate=True;Trusted_Connection=True;");
 
         //บนเซิร์ฟเวอร์
         //optionsBuilder.UseSqlServer("Server=10.103.0.15,1433;Database=ProjectScientDay; Trusted_Connection = false; MultipleActiveResultSets = true; " +
         //    "TrustServerCertificate = True; User Id = student;Password = Com@2022; Encrypt = false; ");
 
-        //base.OnConfiguring(optionsBuilder);
-        //optionsBuilder.UseSqlServer("Server=10.103.0.17,1433;Database=KanjanaburiTravel; Trusted_Connection = false; MultipleActiveResultSets = true; TrustServerCertificate = True; User Id = student;Password = Pass@sql; Encrypt = false; ");
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.UseSqlServer("Server=10.103.0.17,1433;Database=KanjanaburiTravel; Trusted_Connection = false; MultipleActiveResultSets = true; TrustServerCertificate = True; User Id = student;Password = Pass@sql; Encrypt = false; ");
 
     }
 
