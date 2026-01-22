@@ -1,4 +1,5 @@
 ﻿using TravelKanjanuburi.ML;
+using static TravelKanjanuburi.ML.TrainingModels;
 
 [ApiController]
 [Route("api/recommend")]
@@ -131,6 +132,24 @@ public class RecommendController : ControllerBase
                 lastTrainedAtUtc = _store.LastTrainedAtUtc
             }
         });
+    }
+
+    [HttpGet("probe")]
+    // [Authorize(Roles = "ADMIN")]
+    public async Task<IActionResult> Probe(
+    [FromQuery] int userId,
+    [FromQuery] int topN = 10,
+    [FromQuery] bool unseenOnly = true,
+    CancellationToken ct = default)
+    {
+        if (userId <= 0)
+            return BadRequest(new { isSuccess = false, message = "userId ไม่ถูกต้อง" });
+
+        var probe = HttpContext.RequestServices.GetRequiredService<ModelProbeService>();
+        var result = await probe.ProbeAsync(userId, topN, unseenOnly, ct);
+
+        // result มี ok อยู่แล้ว
+        return Ok(new { isSuccess = true, result });
     }
 
     private static int? TryGetUserId(ClaimsPrincipal user)

@@ -22,6 +22,7 @@ using TravelKanjanuburi.Helper;
 using TravelKanjanuburi.Services.Places;
 using TravelKanjanuburi.Services.Trips;
 using TravelKanjanuburi.Services.foods;
+using static TravelKanjanuburi.ML.TrainingModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ builder.Services.AddScoped<AutoTripService>();
 builder.Services.AddScoped<PlaceOpeningHourService>();
 builder.Services.AddScoped<PlaceReviewService>();
 builder.Services.AddScoped<LocalDishService>();
+builder.Services.AddScoped<ModelProbeService>();
 
 
 //ML

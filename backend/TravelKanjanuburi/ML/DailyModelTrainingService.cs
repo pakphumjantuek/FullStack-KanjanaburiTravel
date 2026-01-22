@@ -1,4 +1,6 @@
-﻿public sealed class DailyModelTrainingHostedService : BackgroundService
+﻿using static TravelKanjanuburi.ML.TrainingModels;
+
+public sealed class DailyModelTrainingHostedService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<DailyModelTrainingHostedService> _logger;

@@ -58,7 +58,8 @@ public sealed class ModelStore : IModelStore
             if (_model == null)
                 throw new InvalidOperationException("Model ยังไม่พร้อมใช้งาน (ยังไม่เคยเทรน หรือหาไฟล์ไม่เจอ)");
 
-            // PredictionEngine ไม่ thread-safe → สร้างใหม่ทุกครั้ง
+            // Prediction
+            // ไม่ thread-safe → สร้างใหม่ทุกครั้ง
             return _ml.Model.CreatePredictionEngine<InteractionRow, ScorePrediction>(_model);
         }
         finally { _lock.ExitReadLock(); }

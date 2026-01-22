@@ -1,6 +1,5 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Trainers;
-using TravelKanjanuburi.ML;
 
 public sealed class MlTrainer
 {
@@ -20,8 +19,8 @@ public sealed class MlTrainer
                   LabelColumnName = nameof(InteractionRow.Label),
 
                   // ปรับได้ตามขนาดข้อมูล
-                  NumberOfIterations = 150,
-                  ApproximationRank = 128,
+                  NumberOfIterations = 60,
+                  ApproximationRank = 32,
                   LearningRate = 0.05
               }));
 

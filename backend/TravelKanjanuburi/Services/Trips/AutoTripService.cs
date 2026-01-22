@@ -403,10 +403,6 @@ public sealed class AutoTripService
 
     private static DateTime ConvertToBangkokTime(DateTime input)
     {
-        // ถ้าเป็น UTC / Local / Unspecified ให้พยายาม normalize ให้ได้ "เวลาไทย"
-        // - ถ้า input เป็น UTC -> ConvertTimeFromUtc
-        // - ถ้าเป็น Local -> ConvertTime
-        // - ถ้า Unspecified -> ถือว่าเป็น UTC (เพราะ FE มักส่ง ISO Z) แล้ว ConvertTimeFromUtc
         if (input.Kind == DateTimeKind.Utc)
             return TimeZoneInfo.ConvertTimeFromUtc(input, _tz);
 

@@ -1,4 +1,6 @@
-﻿public interface IModelTrainingService
+﻿using static TravelKanjanuburi.ML.TrainingModels;
+
+public interface IModelTrainingService
 {
     Task<(bool ok, int rows, string? message)> RetrainNowAsync(int days, int minRows, CancellationToken ct);
 }
